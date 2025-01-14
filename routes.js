@@ -1,13 +1,14 @@
 const express = require('express');
 const router = express.Router();
-const { loginUser, registerUser, deleteUser, updateUser } = require('./controllers/user');
+const { loginUser, registerUser, deleteUser, updateUser, getUserByEmail } = require('./controllers/user');
 const { getFoodsByUserEmail, createFood } = require('./controllers/food');
 
 // Rutas para usuarios
+router.get('/user/:email', getUserByEmail);
 router.post('/login', loginUser);
 router.post('/register', registerUser);
 router.delete('/user/:id', deleteUser);
-router.put('/user/:id', updateUser);
+router.put('/user/:email', updateUser);
 
 
 // Rutas para alimentos

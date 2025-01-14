@@ -1,5 +1,20 @@
 const pool = require('../db');
 
+// Get User by Email
+const getUserByEmail = async (req, res) => {
+  const { email } = req.params;
+  try {
+    const result = await pool.query('SELECT * FROM USERS WHERE Email = $1', [email]);
+    if (result.rows.length === 0) {
+      return res.status(404).send('User not found');
+    }
+    res.status(200).json(result.rows[0]);
+  } catch (err) {
+    res.status(500).send('Server error');
+  }
+};
+
+
 // Login User
 const loginUser = async (req, res) => {
   const { email, password } = req.body;
@@ -43,14 +58,14 @@ const deleteUser = async (req, res) => {
   }
 };
 
-// Update User
+// Update User by Email
 const updateUser = async (req, res) => {
-  const { id } = req.params;
-  const { name, email, password } = req.body;
+  const { email } = req.params;
+  const { name, password, kcalxDay, fatxDay, proteinxDay } = req.body;
   try {
     await pool.query(
-      'UPDATE USERS SET Name = $1, Email = $2, Password = $3 WHERE user_id = $4',
-      [name, email, password, id]
+      'UPDATE USERS SET Name = $1, Password = $2, KcalxDay = $3, FatxDay = $4, ProteinxDay = $5 WHERE Email = $6',
+      [name, password, kcalxDay, fatxDay, proteinxDay, email]
     );
     res.status(200).send('User updated successfully');
   } catch (err) {
@@ -58,7 +73,9 @@ const updateUser = async (req, res) => {
   }
 };
 
+
 module.exports = {
+  getUserByEmail,
   loginUser,
   registerUser,
   deleteUser,
